@@ -1,130 +1,109 @@
-using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
-[RequireComponent(typeof(Collider))]
 public class Barriers : MonoBehaviour
 {
-    [SerializeField] private int _damage = 3;
-    [SerializeField] private int _speedRotate = -1;
-    [SerializeField] private ClickHandler _clickHandler;
-    [SerializeField] private List<Barrier> _barriers = new List<Barrier>();
-    [SerializeField] private float _zPosition = 3f;
+    [SerializeField] private int _barriersStart = 0;
 
-    private BarriersPlace _parentPlace;
+    private List<Barrier> _barriers = new List<Barrier>();
+
+    private ScoreCounter _score;
+    private Transform _placeTransform;
     private Transform _transform;
-    private int _barrierIndex = 0;
-    private bool _isMoving = false;
+    private int _barrierIndex;
+    private int _point;
 
-    public bool IsMoving => _isMoving;
     public int MaxCountBarriers => _barriers.Count;
     public int BarrierIndex => _barrierIndex;
-
-    private void OnEnable()
-    {
-        _clickHandler.Clicked += OnClicked;
-    }
-
-    private void OnDisable()
-    {
-        _clickHandler.Clicked -= OnClicked;
-    }
 
     private void Awake()
     {
         _transform = transform;
-        _parentPlace = _transform.parent.GetComponent<BarriersPlace>();
-    }
+        _barrierIndex = _barriersStart;
 
-    private void OnTriggerEnter(Collider trigger)
-    {
-        if (trigger.TryGetComponent(out BarriersPlace barriersPlace) && barriersPlace != _parentPlace)
-        {
-            ResetPosition();
-            Disable();
-
-            gameObject.SetActive(false); 
-            _parentPlace.FreeUpPlace();
+        if (_transform.parent.TryGetComponent(out ScoreCounter score))
+        { 
+            _score = score;
         }
 
-       /* if (trigger.TryGetComponent(out Barriers barriers) && barriers.BarrierNumber == _barrierIndex && IsMoving == true)
+        foreach (Transform child in _transform)
         {
-            barriers.ActiveNetxBarrier();
-            Disable();
-            ResetPosition();
+            if (child != null)
+            {
+                if (child.TryGetComponent(out Barrier barrier))
+                {
+                    _barriers.Add(barrier);
+                }
+            }
+        }
 
-            _collider.enabled = false;
-
-            Destroy(gameObject);
-        }*/
+        ActiveToIndex(_barriersStart);
     }
 
-/*    private void OnCollisionEnter(Collision collision)
+    public void SetPlace(BarriersPlace barriersPlace)
     {
-        if (collision.collider.TryGetComponent(out BarriersPlace barriersPlace))
-        {
-            Disable();
-            ResetPosition();
-        }
-    }*/
+        _placeTransform = barriersPlace.transform;
+    }
 
-/*    public void ActiveNetxBarrier()
+    public void ResetPlace()
     {
-        _barrierIndex++;
-        ActiveToIndex(_barrierIndex);
-    }*/
+        _transform.position = _placeTransform.position;
+    }
 
     public void SetPosition(Vector3 position)
     {
-        _transform.position = new Vector3(position.x, position.y, _zPosition);
+        _transform.position = position;
     }
 
-    public void ActiveToIndex(int index)
+    public bool TryActiveToIndex(int index)
     {
         if (index < _barriers.Count)
         {
-            Disable();
-            Debug.Log($"index {index}");
-            _barrierIndex = index;
-            _barriers[index].gameObject.SetActive(true);
+            ActiveToIndex(index);
+            return true;
         }
+        else
+        { 
+            return false;
+        }
+    }
+
+    public void AddPoints(int point)
+    {
+        _point += point;
+
+        _score.AddPoints(point);
+    }
+
+    public void ControCollider(bool active)
+    { 
+        _barriers.FirstOrDefault(p => p.gameObject.activeSelf == true).ControlColliders(active);
+    }
+
+    public void SetSpeed(int speed)
+    {
+        foreach (Barrier barrier in _barriers)
+        {
+            if (barrier != null && barrier.TryGetComponent(out BarrierTurn barrierTurn) && barrierTurn.gameObject.activeSelf == true)
+            { 
+                barrierTurn.SetSpeed(speed);
+            }
+        }
+    }
+
+    private void ActiveToIndex(int index)
+    {
+        Disable();
+        _barrierIndex = index;
+        _barriers[index].gameObject.SetActive(true);
     }
 
     private void Disable()
     {
         foreach (var barrier in _barriers)
-        { 
+        {
             barrier.gameObject?.SetActive(false);
-        }
-    }
-
-    private void ResetPosition()
-    {
-        _transform.position = _parentPlace.transform.position;
-    }
-
-    private void OnClicked(bool isClick)
-    {
-        _isMoving = isClick;
-
-        if (isClick == false)
-        {
-            ResetPosition();
-        }
-    }
-
-    private void SetValues()
-    {
-        foreach (var barrier in _barriers) 
-        {
-            if (barrier.TryGetComponent(out BarrierTurn barrierTurn))
-            {
-                barrierTurn.SetSpeed(_speedRotate);
-            }
-
-            barrier.SetDamaga(_damage);
         }
     }
 }

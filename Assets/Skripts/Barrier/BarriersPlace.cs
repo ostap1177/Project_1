@@ -1,90 +1,54 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class BarriersPlace : MonoBehaviour
 {
-    private Transform _transform;
-    private Barriers _barriersChild;
-    private bool _isFilled;
-    private int _nextBarriar = 1; 
+    private Barriers _barriersObject = null;
+    public bool IsFilled => _barriersObject != null;
 
-    public bool IsFilled => _isFilled;
-
-    private void Awake()
+    private void OnTriggerEnter(Collider collider)
     {
-        _transform = transform;
-
-        FindBarriers(); 
-
-        _barriersChild.gameObject.SetActive(false);
-        _isFilled = false;
-    }
-
-    /*  private void OnCollisionEnter(Collision trigger)
-      {
-          if (trigger.gameObject.TryGetComponent(out Barriers barriers))
-          {
-              if (_isFilled == false)
-              {
-                  FillPlace();
-              }
-              else if (_isFilled == false && barriers.BarrierNumber == _barriersChild.BarrierNumber)
-              {
-                  FillPlace();
-                  _barriersChild.ActiveNetxBarrier();
-              }
-          }
-      }*/
-
-    private void OnTriggerEnter(Collider trigger)
-    {
-        if (trigger.TryGetComponent(out Barriers barriers) && barriers !=_barriersChild)
+        if (collider.TryGetComponent(out Barriers component) && IsFilled)
         {
-            if (_isFilled)  
+            if (_barriersObject != component && component.BarrierIndex == _barriersObject.BarrierIndex)
             {
-                if (barriers.BarrierIndex == _barriersChild.BarrierIndex 
-                && _barriersChild.BarrierIndex <= _barriersChild.MaxCountBarriers)
+                if (_barriersObject.TryActiveToIndex(_barriersObject.BarrierIndex + 1))
                 {
-                    _barriersChild.ActiveToIndex(barriers.BarrierIndex + _nextBarriar);
+                    Destroy(component.gameObject);
                 }
             }
-            else
-            {
-                FillPlace(barriers.BarrierIndex);
-            }
         }
     }
 
-    public void FreeUpPlace()
+    private void OnTriggerStay(Collider collider)
     {
-        _isFilled = false;
-    }
-
-    public void FillPlace(int index)
-    {
-        _barriersChild.gameObject.SetActive(true);
-        _barriersChild.ActiveToIndex(_barriersChild.BarrierIndex);
-        _isFilled = true;
-    }
-
-    private void InspectPlace()
-    {
-        if (transform.childCount > 0)
-        { 
-            _isFilled = false;
-        }
-        else
+        if (collider.TryGetComponent(out Barriers component) && _barriersObject == null)
         {
-            _isFilled = true;
+            _barriersObject = component;
         }
     }
 
-    private void FindBarriers()
+    private void OnTriggerExit(Collider collider)
     {
-        if (_transform.childCount > 0 && _transform.GetChild(0).TryGetComponent(out Barriers barriers))
+        if (collider.TryGetComponent(out Barriers component))
         {
-            _barriersChild = barriers;
+           _barriersObject = null;
         }
+    }
+
+    public void SetBarriers(Barriers barriers)
+    { 
+        barriers.SetPlace(this);
+        _barriersObject = barriers;
+    }
+
+    private void DestroyBarrier(Barriers barriers)
+    {
+        if (transform.parent.TryGetComponent(out Switcher switcher))
+        {
+            switcher.RemoveActiveBarriers(barriers);
+        }
+
+        Destroy(barriers.gameObject);
     }
 }
-
