@@ -1,18 +1,16 @@
-using Agava.YandexGames;
 using UnityEngine;
 
-public class LanguageIdentify : MonoBehaviour
+namespace Localization
 {
-    private const string EnglishCode = "en";
-
-    [SerializeField] private LanguageDefinition _languageDefinition;
-
-    private void Awake()
+    public class LanguageIdentify : MonoBehaviour
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            _languageDefinition.SaveLanguage(YandexGamesSdk.Environment.i18n.lang);
-#else
-        _languageDefinition.SaveLanguage(EnglishCode);
-#endif
+        private const string EnglishCode = "en";
+
+        [SerializeField] private LanguageDefinition _languageDefinition;
+
+        private void Awake()
+        {
+            _languageDefinition.SaveLanguage(EnglishCode);
+        }
     }
 }

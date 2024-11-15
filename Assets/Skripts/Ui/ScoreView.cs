@@ -1,23 +1,27 @@
 using TMPro;
 using UnityEngine;
+using Ui;
 
-public class ScoreView : MonoBehaviour
+namespace UiView
 {
-    [SerializeField] private ScoreCounter _scoreCounter;
-    [SerializeField] private TMP_Text _scoreText;
-
-    private void OnEnable()
+    public class ScoreView : MonoBehaviour
     {
-        _scoreCounter.TransferadPoints += OnTransferadPoints;
-    }
+        [SerializeField] private ScoreCounter _scoreCounter;
+        [SerializeField] private TMP_Text _scoreText;
 
-    private void OnDisable()
-    {
-        _scoreCounter.TransferadPoints -= OnTransferadPoints;
-    }
+        private void OnEnable()
+        {
+            _scoreCounter.TransferadPoints += OnTransferadPoints;
+        }
 
-    private void OnTransferadPoints(int score)
-    {
-       _scoreText.text = score.ToString();
+        private void OnDisable()
+        {
+            _scoreCounter.TransferadPoints -= OnTransferadPoints;
+        }
+
+        private void OnTransferadPoints(int score)
+        {
+            _scoreText.text = score.ToString();
+        }
     }
 }

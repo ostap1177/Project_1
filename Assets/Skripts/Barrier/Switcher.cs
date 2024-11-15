@@ -1,103 +1,89 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using UnityEngine;
+using Entity;
 
-public class Switcher : MonoBehaviour
+namespace BarriersEntity
 {
-    [SerializeField] private ScoreCounter _scoreCounter;
-    [SerializeField] private ButtonClicker _playEvent;
-    [SerializeField] private CostView _costView;
-    [SerializeField] private int _barrierCost;
-    [SerializeField] private float _costMultiplier = 2.2f;
-    [SerializeField] private int _countBarriersStart = 6;
-    [SerializeField] private Barriers _barriersPrefab;
-
-    private List<BarriersPlace> _places = new List<BarriersPlace>();
-    private List<Barriers> _activeBarriers = new List<Barriers>();
-    private Transform _transform;
-
-    public int BarrierCost => _barrierCost;
-
-    private void OnEnable()
+    public class Switcher : EntityBuying
     {
-        _playEvent.BuildedBarriers += OnBuildedBarriers;
-    }
+        [Space(10)]
+        [SerializeField] private int _countBarriersStart = 6;
+        [SerializeField] private Barriers _barriersPrefab;
+        [Space(10)]
+        [SerializeField] private IdentifyBarriersPrefab _identifyBarriersPrefab;
 
-    private void OnDisable()
-    {
-        _playEvent.BuildedBarriers -= OnBuildedBarriers;
-    }
+        private List<BarriersPlace> _places = new List<BarriersPlace>();
+        private List<Barriers> _activeBarriers = new List<Barriers>();
+        private Transform _transform;
 
-    private void Awake()
-    {
-        _transform = transform;
-        _costView.SetText(_barrierCost); 
+        public int BarrierCost => _cost;
 
-        foreach (Transform child in _transform)
+        private void OnEnable()
         {
-            if (child.TryGetComponent(out BarriersPlace barriersPlace))
+            _buttonClicker.BuildedBarriers += this.OnCreate;
+            _reward.BuildedBarrier += OnRewarded;
+        }
+
+        private void OnDisable()
+        {
+            _buttonClicker.BuildedBarriers -= this.OnCreate;
+            _reward.BuildedBarrier -= OnRewarded;
+        }
+
+        private void Awake()
+        {
+            _transform = transform;
+            _costView.SetText(_cost);
+
+            foreach (Transform child in _transform)
             {
-                _places.Add(barriersPlace);
+                if (child.TryGetComponent(out BarriersPlace barriersPlace))
+                {
+                    _places.Add(barriersPlace);
+                }
+            }
+
+            if (_countBarriersStart > _places.Count)
+            {
+                _countBarriersStart = _places.Count;
             }
         }
 
-        if (_countBarriersStart > _places.Count)
+        private void Start()
         {
-            _countBarriersStart=_places.Count;
-        }
-    }
-
-    private void Start()
-    {
-        for (int i = 0; i < _countBarriersStart; i++)
-        {
-            InstantiateBarriers();
-        }
-    }
-
-    public void SetSpeedActiveBarriers(int speed)
-    {
-        foreach (Barriers barriers in _activeBarriers)
-        {
-            if (barriers != null)
+            for (int i = 0; i < _countBarriersStart; i++)
             {
-                barriers.SetSpeed(speed);
+                EntityCreate();
             }
         }
-    }
 
-    public void RemoveActiveBarriers(Barriers barriers)
-    {
-        _activeBarriers.Remove(barriers);
-    }
-
-    private void InstantiateBarriers()
-    {
-        if (_places.Count(place => place.IsFilled == false) > 0)
+        public void SetSpeedActiveBarriers(int speed)
         {
-            BarriersPlace tempPlace = _places.FirstOrDefault(place => place.IsFilled == false);
-            Barriers barriers = Instantiate(_barriersPrefab, tempPlace.transform.position, Quaternion.identity, _transform);
-
-            tempPlace.SetBarriers(barriers);
-            _activeBarriers.Add(barriers);
+            foreach (Barriers barriers in _activeBarriers)
+            {
+                if (barriers != null)
+                {
+                    barriers.SetSpeed(speed);
+                }
+            }
         }
-    }
 
-    private void OnBuildedBarriers()
-    {
-        if (_scoreCounter.TryRemovePoint(_barrierCost))
+        public void RemoveActiveBarriers(Barriers barriers)
         {
-            InstantiateBarriers();
-            ChangePrice();
+            _activeBarriers.Remove(barriers);
         }
-    }
 
-    private void ChangePrice()
-    {
-        float tempValue = (float)_barrierCost * _costMultiplier;
+        protected override void EntityCreate()
+        {
+            if (_places.Count(place => place.IsFilled == false) > 0)
+            {
+                BarriersPlace tempPlace = _places.FirstOrDefault(place => place.IsFilled == false);
+                Barriers barriers = Instantiate(_identifyBarriersPrefab.ReturnBarriers(), tempPlace.transform.position, Quaternion.identity, _transform);
 
-        _barrierCost = (int)tempValue;
-        _costView.SetText(_barrierCost);
+                tempPlace.SetBarriers(barriers);
+                _activeBarriers.Add(barriers);
+            }
+        }
     }
 }

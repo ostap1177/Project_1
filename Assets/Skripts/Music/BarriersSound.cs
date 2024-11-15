@@ -1,31 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using CoinSpawn;
 
-public class BarriersSound : MonoBehaviour
+namespace Sound
 {
-    [SerializeField] CoinCreator _coinCreator;
-    [SerializeField] AudioSource _audioSourceHit;
-
-
-    private void OnEnable()
+    public class BarriersSound : MonoBehaviour
     {
-        _coinCreator.PlayedSound += OnPlayedSound;
-    }
+        [SerializeField] CoinCreator _coinCreator;
+        [SerializeField] AudioSource _audioSourceHit;
 
-    private void OnDisable()
-    {
-        _coinCreator.PlayedSound += OnPlayedSound;
-    }
+        private void OnEnable()
+        {
+            _coinCreator.PlayedSound += OnPlayedSound;
+        }
 
-    private void OnPlayedSound()
-    {
-        PlaySound(_audioSourceHit);
-    }
+        private void OnDisable()
+        {
+            _coinCreator.PlayedSound += OnPlayedSound;
+        }
 
-    private void PlaySound(AudioSource audioSource)
-    {
-        audioSource.Stop();
-        audioSource.Play();
+        private void OnPlayedSound()
+        {
+            PlaySound(_audioSourceHit);
+        }
+
+        private void PlaySound(AudioSource audioSource)
+        {
+            audioSource.Stop();
+            audioSource.Play();
+        }
     }
 }

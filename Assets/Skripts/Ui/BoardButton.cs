@@ -1,19 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class BoardButton : MonoBehaviour
+namespace Ui
 {
-    public void OpenMenu(UiBoard menu)
-    { 
-        menu.gameObject.SetActive(true);
-        Time.timeScale = 0;
-    }
-
-    public void CloseMenu(UiBoard menu)
+    public class BoardButton : ParentButtons
     {
-        Time.timeScale = 1;
-        menu .gameObject.SetActive(false);
+        [Space(10)]
+        [SerializeField] private UiBoard _uiBoard;
+
+        override protected void Click()
+        {
+            if (_uiBoard.gameObject.activeSelf == false)
+            {
+                _uiBoard.gameObject.SetActive(true);
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Time.timeScale = 1;
+                _uiBoard.gameObject.SetActive(false);
+            }
+        }
     }
 }

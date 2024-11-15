@@ -1,37 +1,39 @@
 using UnityEngine;
 
-public class BarrierTurn : MonoBehaviour
+namespace BarrierEntity
 {
-    private Vector3 _rotation;    
-    private float _speedRotate = 700;
-    private float _normalSpeed;
-
-
-    private Transform _transform;
-
-    private void Awake()
+    public class BarrierTurn : MonoBehaviour
     {
-        _transform = transform;
-        SetNormalSpeed();
-    }
+        private Vector3 _rotation;
+        private float _speedRotate = 700;
+        private float _normalSpeed;
+        
+        private Transform _transform;
 
-    private void Update()
-    {
-        RotateBarrier();
-    }
+        private void Awake()
+        {
+            _transform = transform;
+            SetNormalSpeed();
+        }
 
-    public void SetSpeed(int speedRotate)
-    {
-        _rotation = new Vector3(0, 0, _speedRotate * speedRotate);
-    }
+        private void Update()
+        {
+            RotateBarrier();
+        }
 
-    public void SetNormalSpeed()
-    {
-        _rotation = new Vector3(0, 0, _speedRotate);
-    }
+        public void SetSpeed(int speedRotate)
+        {
+            _rotation = new Vector3(0, 0, _speedRotate * speedRotate);
+        }
 
-    private void RotateBarrier()
-    {
-        _transform.Rotate(_rotation * Time.deltaTime);
+        public void SetNormalSpeed()
+        {
+            _rotation = new Vector3(0, 0, _speedRotate);
+        }
+
+        private void RotateBarrier()
+        {
+            _transform.Rotate(_rotation * Time.deltaTime);
+        }
     }
 }

@@ -1,66 +1,89 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Entity;
+using Ui;
 
-public class BoostBarriers : MonoBehaviour
+namespace BarriersEntity
 {
-    [SerializeField] private float _socondTime = 5f;
-    [SerializeField] private int _boostMultiplier = 2;
-    [SerializeField] private Switcher _switcher;
-    [SerializeField] private Timer _timer;
-    [SerializeField] private ButtonClicker _buttonClicker;
-    [SerializeField] private ScoreCounter _scoreCounter;
-    [SerializeField] private CostView _costView;
-    [SerializeField] private int _boostCost = 900;
-    [SerializeField] private float _costMultiplier = 2.2f;
-
-    private int _normalMultiplaer = 1;
-
-    private void OnEnable()
+    public class BoostBarriers : EntityBuying
     {
-        _buttonClicker.BoostedBarriers += OnBoostedBarriers;
-        _timer.EndTime += OnEndTime;
-    }
+        [Space(10)]
+        [SerializeField] private float _socondTime = 5f;
+        [SerializeField] private int _boostMultiplier = 2;
+        [SerializeField] private Switcher _switcher;
+        [SerializeField] private Timer _timer;
 
-    private void OnDisable()
-    {
-        _buttonClicker.BoostedBarriers -= OnBoostedBarriers;
-        _timer.EndTime -= OnEndTime;
-    }
+        private bool _isActive = false;
+        private int _normalMultiplaer = 1;
 
-    private void OnBoostedBarriers()
-    {
-        if (_scoreCounter.TryRemovePoint(_boostCost))
+        public int BoostCost => _cost;
+        public bool IsActive => _isActive;
+
+        private void OnEnable()
         {
-            Boost();
-            ChangePrice();
+            _buttonClicker.BoostedBarriers += OnBoost;
+            _reward.BoostedBarrier += OnRewarded;
+            _reward.ErrorVideo += OnErrorVideo;
+            _timer.EndTime += OnEndTime;
         }
-    }
 
-    private void Awake()
-    {
-        _costView.SetText(_boostCost);
-    }
+        private void OnDisable()
+        {
+            _buttonClicker.BoostedBarriers -= OnBoost;
+            _reward.BoostedBarrier -= OnRewarded;
+            _reward.ErrorVideo -= OnErrorVideo;
+            _timer.EndTime -= OnEndTime;
+        }
 
-    private void OnEndTime()
-    {
-        _costView.EnableText(true);
-        _switcher.SetSpeedActiveBarriers(_normalMultiplaer);
-    }
+        private void Awake()
+        {
+            _costView.SetText(_cost);
+        }
 
-    private void Boost()
-    {
-        _costView.EnableText(false);
-        _timer.CountingDown(_socondTime);
-        _switcher.SetSpeedActiveBarriers(_boostMultiplier);
-    }
+        override public void AdView(bool isView)
+        {
+            if (_isActive == false)
+            {
+                _costView.EnableText(!isView);
+                _costView.EnableImage(isView);
+            }
+            else
+            {
+                _costView.EnableText(false);
+                _costView.EnableImage(false);
+            }
+        }
 
-    private void ChangePrice()
-    {
-        float tempValue = (float)_boostCost * _costMultiplier;
+        private void OnErrorVideo()
+        {
+            _costView.EnableText(true);
+            _costView.EnableImage(false);
 
-        _boostCost = (int)tempValue;
-        _costView.SetText(_boostCost);
+            _isActive = false;
+        }
+
+        private void OnBoost()
+        {
+            if (_isActive == false)
+            {
+                OnCreate();
+            }
+        }
+
+        private void OnEndTime()
+        {
+            _isActive = false;
+            _costView.EnableText(true);
+            _switcher.SetSpeedActiveBarriers(_normalMultiplaer);
+        }
+
+        override protected void EntityCreate()
+        {
+            _isActive = true;
+
+            _costView.EnableText(false);
+            _costView.EnableImage(false);
+            _timer.CountingDown(_socondTime);
+            _switcher.SetSpeedActiveBarriers(_boostMultiplier);
+        }
     }
 }

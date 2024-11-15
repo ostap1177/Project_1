@@ -1,45 +1,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Manikin : MonoBehaviour
+namespace ManikinEntity
 {
-    [SerializeField] private int _healtPart = 10;
-    [SerializeField] private int _waiteDestroy = 5;
-
-    private List<ManikinPart> _manikinParts = new List<ManikinPart>();
-    private Transform _transform;
-    private WaitForSecondsRealtime _waitTime;
-
-    private void Awake()
+    public class Manikin : MonoBehaviour
     {
-        _transform = transform;
+        [SerializeField] private int _healtPart = 10;
+        [SerializeField] private int _waiteDestroy = 5;
 
-        CollectComponentsInChildren(_transform);
-        
-        _waitTime = new WaitForSecondsRealtime(_waiteDestroy);
-        StartCoroutine(DelayDestroy());
-    }
+        private List<ManikinPart> _manikinParts = new List<ManikinPart>();
+        private Transform _transform;
+        private WaitForSecondsRealtime _waitTime;
 
-    private void CollectComponentsInChildren(Transform parent)
-    {
-        if (parent.TryGetComponent(out ManikinPart component))
+        private void Awake()
         {
-            component.SetHealth(_healtPart);
-            _manikinParts.Add(component);
+            _transform = transform;
+
+            CollectComponentsInChildren(_transform);
+
+            _waitTime = new WaitForSecondsRealtime(_waiteDestroy);
+            StartCoroutine(DelayDestroy());
         }
 
-        foreach (Transform child in parent)
+        private void CollectComponentsInChildren(Transform parent)
         {
-            CollectComponentsInChildren(child);
-        }
-    }
+            if (parent.TryGetComponent(out ManikinPart component))
+            {
+                component.SetHealth(_healtPart);
+                _manikinParts.Add(component);
+            }
 
-    private IEnumerator<WaitForSecondsRealtime> DelayDestroy()
-    {
-        while (true)
+            foreach (Transform child in parent)
+            {
+                CollectComponentsInChildren(child);
+            }
+        }
+
+        private IEnumerator<WaitForSecondsRealtime> DelayDestroy()
         {
-            yield return _waitTime;
-            Destroy(gameObject);
+            while (true)
+            {
+                yield return _waitTime;
+                Destroy(gameObject);
+            }
         }
     }
 }

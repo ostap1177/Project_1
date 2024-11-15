@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class UiBoard : MonoBehaviour
+namespace Ui
 {
-   
+    public class UiBoard : MonoBehaviour
+    {
+
+    }
 }

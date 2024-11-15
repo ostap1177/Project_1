@@ -1,48 +1,53 @@
 using UnityEngine;
+using Ui;
 
-[RequireComponent(typeof(Barriers))]
-public class BarriersCollision : MonoBehaviour
+namespace BarriersEntity
 {
-    [SerializeField] private DragHandler _clickHandlerNew;
-    private Barriers _barriersObject;
-    private Transform _transform;
-    private bool _isDraging;
+    [RequireComponent(typeof(Barriers))]
 
-    public bool IsDraging => _isDraging;
-
-    private void OnEnable()
+    public class BarriersCollision : MonoBehaviour
     {
-        _clickHandlerNew.Dragging += OnDragging;
-    }
+        [SerializeField] private DragHandler _clickHandlerNew;
+        private Barriers _barriersObject;
+        private Transform _transform;
+        private bool _isDraging;
 
-    private void OnDisable()
-    {
-        _clickHandlerNew.Dragging -= OnDragging;
-    }
+        public bool IsDraging => _isDraging;
 
-    private void Awake()
-    {
-        _transform = transform;
-        _barriersObject = GetComponent<Barriers>();
-    }
-
-
-    private void OnTriggerEnter(Collider collider)
-    {
-        if (collider.TryGetComponent(out BarriersPlace component) && component.IsFilled == false)
+        private void OnEnable()
         {
-            _barriersObject.SetPlace(component);
+            _clickHandlerNew.Dragging += OnDragging;
         }
-    }
 
-    private void OnDragging(bool drag)
-    { 
-        _isDraging = drag;
-        _barriersObject.ControCollider(!drag);
+        private void OnDisable()
+        {
+            _clickHandlerNew.Dragging -= OnDragging;
+        }
 
-        if (drag == false)
-        { 
-            _barriersObject.ResetPlace();
+        private void Awake()
+        {
+            _transform = transform;
+            _barriersObject = GetComponent<Barriers>();
+        }
+
+
+        private void OnTriggerEnter(Collider collider)
+        {
+            if (collider.TryGetComponent(out BarriersPlace component) && component.IsFilled == false)
+            {
+                _barriersObject.SetPlace(component);
+            }
+        }
+
+        private void OnDragging(bool drag)
+        {
+            _isDraging = drag;
+            _barriersObject.ControCollider(!drag);
+
+            if (drag == false)
+            {
+                _barriersObject.ResetPlace();
+            }
         }
     }
 }

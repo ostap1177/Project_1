@@ -1,57 +1,60 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManikinPart : MonoBehaviour
+namespace ManikinEntity
 {
-    private int _health = 10;
-
-    private Transform _transform;
-    private Joint _joint;
-    private WaitForSecondsRealtime _waitTime;
-    private float _waiteDestroy = 10f;
-
-    private void Awake()
+    public class ManikinPart : MonoBehaviour
     {
-        _transform = transform; 
+        private int _health = 10;
 
-        _joint = GetComponent<Joint>();
+        private Transform _transform;
+        private Joint _joint;
+        private WaitForSecondsRealtime _waitTime;
+        private float _waiteDestroy = 10f;
 
-        _waitTime = new WaitForSecondsRealtime(_waiteDestroy);
-    }
-
-    public void SetHealth(int health)
-    {
-        _health = health; 
-    }
-
-    public void TakeDamage(int damade)
-    {
-        if (_health > 0)
+        private void Awake()
         {
-            _health -= damade;
+            _transform = transform;
+
+            _joint = GetComponent<Joint>();
+
+            _waitTime = new WaitForSecondsRealtime(_waiteDestroy);
         }
-        else
-        {
-            DisconnectPatr();
-        }
-    }
 
-    private void DisconnectPatr()
-    { 
-        if(_transform.parent != null && _joint != null)
+        public void SetHealth(int health)
         {
-            Destroy(_joint);
-            _transform.parent = null;
-            StartCoroutine(DelayDestroy());
+            _health = health;
         }
-    }
 
-    private IEnumerator<WaitForSecondsRealtime> DelayDestroy()
-    {
-        while (true)
+        public void TakeDamage(int damade)
         {
-            yield return _waitTime;
-            Destroy(gameObject);
+            if (_health > 0)
+            {
+                _health -= damade;
+            }
+            else
+            {
+                DisconnectPatr();
+            }
+        }
+
+        private void DisconnectPatr()
+        {
+            if (_transform.parent != null && _joint != null)
+            {
+                Destroy(_joint);
+                _transform.parent = null;
+                StartCoroutine(DelayDestroy());
+            }
+        }
+
+        private IEnumerator<WaitForSecondsRealtime> DelayDestroy()
+        {
+            while (true)
+            {
+                yield return _waitTime;
+                Destroy(gameObject);
+            }
         }
     }
 }

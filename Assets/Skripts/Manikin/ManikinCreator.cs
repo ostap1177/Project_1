@@ -1,59 +1,44 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Entity;
 
-public class ManikinCreator : MonoBehaviour
+namespace ManikinEntity
 {
-    [SerializeField] private ScoreCounter _scoreCounter;
-    [SerializeField] private ButtonClicker _playEventer;
-    [SerializeField] private CostView _costView;
-    [SerializeField] private int _manikinCost = 100;
-    [SerializeField] private float _costMultiplier = 1.1f;
-    [SerializeField] private Manikin _manikinPrefab;
-    [SerializeField] private float _leftLimit;
-    [SerializeField] private float _rightLimit;
-
-    private Transform _transform;
-
-    public int ManikinCost => _manikinCost;
-
-    private void OnEnable()
+    public class ManikinCreator : EntityBuying
     {
-        _playEventer.DropedManikin += OnDropedManikin;
-    }
+        [Space(10)]
+        [SerializeField] private Manikin _manikinPrefab;
+        [SerializeField] private float _leftLimit;
+        [SerializeField] private float _rightLimit;
 
-    private void OnDisable()
-    {
-        _playEventer.DropedManikin -= OnDropedManikin;
-    }
+        private Transform _transform;
 
-    private void Awake()
-    {
-        _transform = transform;
-        _costView.SetText(_manikinCost);
-    }
+        public int ManikinCost => _cost;
 
-    private void Create()
-    { 
-        float xPosition = Random.Range(_leftLimit, _rightLimit);
-        Vector3 position = new Vector3(xPosition, _transform.position.y, _transform.position.z);
-
-        Instantiate(_manikinPrefab.gameObject, position, Quaternion.identity);
-    }
-
-    private void OnDropedManikin()
-    {
-        if (_scoreCounter.TryRemovePoint(_manikinCost))
-        { 
-            Create();
-            ChangePrice();
+        private void OnEnable()
+        {
+            _buttonClicker.DropedManikin += this.OnCreate;
+            _reward.DropedManikin += OnRewarded;
         }
-    }
 
-    private void ChangePrice()
-    {
-        float tempValue = (float)_manikinCost * _costMultiplier;
+        private void OnDisable()
+        {
+            _buttonClicker.DropedManikin -= this.OnCreate;
+            _reward.DropedManikin -= OnRewarded;
+        }
 
-         _manikinCost = (int)tempValue;
-        _costView.SetText(_manikinCost);
+        private void Awake()
+        {
+            _costView.SetText(_cost);
+            _transform = transform;
+        }
+
+        protected override void EntityCreate()
+        {
+            float xPosition = Random.Range(_leftLimit, _rightLimit);
+            Vector3 position = new Vector3(xPosition, _transform.position.y, _transform.position.z);
+
+            Instantiate(_manikinPrefab.gameObject, position, Quaternion.identity);
+        }
     }
 }

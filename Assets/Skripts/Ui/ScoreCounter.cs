@@ -1,78 +1,90 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System;
 
-public class ScoreCounter : MonoBehaviour
+namespace Ui
 {
-    [SerializeField] private int _currentScore = 100;
-    [SerializeField] private Timer _timer;
-    [SerializeField] private int _costSeconds = 1;
-
-    private int _bestScore;
-    private int _moloseconds = 1000;
-
-    public event UnityAction<int> TransferadPoints;
-    public event UnityAction<int> TransferadToYandex;
-    public event UnityAction<float,float,int> FinalizeTime;
-
-    public int CurrentScore => _currentScore;
-    public int CostSeconds => _costSeconds;
-
-    private void OnEnable()
+    public class ScoreCounter : MonoBehaviour
     {
-        _timer.ElapsedSecond += OnElapsedSecond;
-    }
+        [SerializeField] private int _currentScore = 100;
+        [SerializeField] private Timer _timer;
+        [SerializeField] private int _costSeconds = 1;
 
-    private void OnDisable()
-    {
-        _timer.ElapsedSecond -= OnElapsedSecond;
-    }
+        private int _bestScore;
+        private int _moloseconds = 1000;
 
-    private void Start()
-    {
-        TransferadPoints?.Invoke(_currentScore);
-    }
+        public event Action<int> TransferadPoints;
+        public event Action<int> TransferadToYandex;
+        public event Action<float, float, int> FinalizeTime;
+        public event Action OveredGame;
 
-    public void AddPoints(int point)
-    {
-        _currentScore += point;
+        public int CurrentScore => _currentScore;
+        public int CostSeconds => _costSeconds;
 
-        if (_currentScore > _bestScore)
-        { 
-            _bestScore = _currentScore;
+        private void OnEnable()
+        {
+            _timer.ElapsedSecond += OnElapsedSecond;
         }
 
-        TransferadPoints?.Invoke(_currentScore);
-    }
-
-    public bool TryRemovePoint(int point)
-    {
-        if (_currentScore - point >= 0)
+        private void OnDisable()
         {
-            _currentScore -= point;
+            _timer.ElapsedSecond -= OnElapsedSecond;
+        }
+
+        private void Start()
+        {
             TransferadPoints?.Invoke(_currentScore);
-            return true;
         }
-        else
+
+        public void AddPoints(int point)
         {
-            return false;
+            _currentScore += point;
+
+            if (_currentScore > _bestScore)
+            {
+                _bestScore = _currentScore;
+            }
+
+            TransferadPoints?.Invoke(_currentScore);
         }
-    }
 
-    public void FinalCalculateScore()
-    {
-        int scoreInSeconds = (int)_timer.SecondTime;
-        scoreInSeconds = scoreInSeconds * _costSeconds + _currentScore;
+        public bool TryRemovePoint(int point)
+        {
+            if (_currentScore - point >= 0)
+            {
+                _currentScore -= point;
+                TransferadPoints?.Invoke(_currentScore);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-        float resultMinutes = Mathf.FloorToInt(scoreInSeconds / 60);
-        float resultSeconds = Mathf.FloorToInt(scoreInSeconds % 60);
+        public void FinalCalculateScore()
+        {
+            int scoreInSeconds = (int)_timer.SecondTime;
+            scoreInSeconds = scoreInSeconds * _costSeconds + _currentScore;
 
-        TransferadToYandex?.Invoke(scoreInSeconds * _moloseconds);
-        FinalizeTime?.Invoke(resultMinutes, resultSeconds, _bestScore);
-    }
+            float resultMinutes = Mathf.FloorToInt(scoreInSeconds / 60);
+            float resultSeconds = Mathf.FloorToInt(scoreInSeconds % 60);
 
-    private void OnElapsedSecond()
-    {
-        _currentScore -= _costSeconds;
-        TransferadPoints?.Invoke(_currentScore);
+            TransferadToYandex?.Invoke(scoreInSeconds * _moloseconds);
+
+            FinalizeTime?.Invoke(resultMinutes, resultSeconds, _bestScore);
+        }
+
+        private void OnElapsedSecond()
+        {
+            _currentScore -= _costSeconds;
+            TransferadPoints?.Invoke(_currentScore);
+
+            if (_currentScore <= 0)
+            {
+                FinalCalculateScore();
+                OveredGame?.Invoke();
+            }
+        }
     }
 }

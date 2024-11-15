@@ -1,58 +1,60 @@
+using System;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.Events;
 
-[RequireComponent(typeof(BarrierTurn))]
-
-public class Barrier : MonoBehaviour
+namespace BarrierEntity
 {
-    private int _coin = 15;
+    [RequireComponent(typeof(BarrierTurn))]
 
-    private int _damage = 5;
-    private List<Collider> _colliders = new List<Collider>();
-    private Transform _transform;
-
-    public event UnityAction<int, Vector3> CreateCoin;
-
-    private void Awake()
+    public class Barrier : MonoBehaviour
     {
-        _transform = transform;
-        TakeColliders();
-    }
+        private int _coin = 15;
 
-    public void ControlColliders(bool active)
-    {
-        foreach (Collider collider in _colliders)
+        private int _damage = 5;
+        private List<Collider> _colliders = new List<Collider>();
+        private Transform _transform;
+
+        public event Action<int, Vector3> CreateCoin;
+
+        private void Awake()
         {
-            collider.enabled = active;
+            _transform = transform;
+            TakeColliders();
         }
-    }
 
-    public int ApplyDamage(Vector3 contactPoint)
-    {
-        CreateCoin?.Invoke(_coin, contactPoint);
-        return _damage; 
-    }
-
-    public void SetDamaga(int damage)
-    { 
-        _damage = damage;
-    }
-
-    private void TakeColliders()
-    {
-        if (_transform.TryGetComponent(out Collider collider))
+        public void ControlColliders(bool active)
         {
-            _colliders.Add(collider);
-        }
-        else if (_transform.childCount > 0)
-        {
-            foreach (Transform child in _transform)
+            foreach (Collider collider in _colliders)
             {
-                if (child.TryGetComponent(out collider))
+                collider.enabled = active;
+            }
+        }
+
+        public int ApplyDamage(Vector3 contactPoint)
+        {
+            CreateCoin?.Invoke(_coin, contactPoint);
+            return _damage;
+        }
+
+        public void SetDamaga(int damage)
+        {
+            _damage = damage;
+        }
+
+        private void TakeColliders()
+        {
+            if (_transform.TryGetComponent(out Collider collider))
+            {
+                _colliders.Add(collider);
+            }
+            else if (_transform.childCount > 0)
+            {
+                foreach (Transform child in _transform)
                 {
-                    _colliders.Add(collider);
+                    if (child.TryGetComponent(out collider))
+                    {
+                        _colliders.Add(collider);
+                    }
                 }
             }
         }

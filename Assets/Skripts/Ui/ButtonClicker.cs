@@ -1,24 +1,47 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.UI;
 
-public class ButtonClicker : MonoBehaviour
+namespace Ui
 {
-    public event UnityAction BuildedBarriers;
-    public event UnityAction DropedManikin;
-    public event UnityAction BoostedBarriers;
-
-    public void DropManikin()
+    public class ButtonClicker : MonoBehaviour
     {
-        DropedManikin?.Invoke();
-    }
+        [SerializeField] private Button _buildedBarriers;
+        [SerializeField] private Button _dropedManikin;
+        [SerializeField] private Button _boostedBarriers;
 
-    public void BuildBarriers()
-    { 
-        BuildedBarriers?.Invoke();
-    }
 
-    public void BoostBarriers()
-    {
-        BoostedBarriers?.Invoke();
+        public event Action BuildedBarriers;
+        public event Action DropedManikin;
+        public event Action BoostedBarriers;
+
+        private void OnEnable()
+        {
+            _buildedBarriers.onClick.AddListener(BuildBarriers);
+            _dropedManikin.onClick.AddListener(DropManikin);
+            _boostedBarriers.onClick.AddListener(BoostBarriers);  
+        }
+
+        private void OnDisable()
+        {
+            _buildedBarriers.onClick.RemoveListener(BuildBarriers);
+            _dropedManikin.onClick.RemoveListener(DropManikin);
+            _boostedBarriers.onClick.RemoveListener(BoostBarriers);
+        }
+
+        public void DropManikin()
+        {
+            DropedManikin?.Invoke();
+        }
+
+        public void BuildBarriers()
+        {
+            BuildedBarriers?.Invoke();
+        }
+
+        public void BoostBarriers()
+        {
+            BoostedBarriers?.Invoke();
+        }
     }
 }

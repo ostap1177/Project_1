@@ -1,19 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class CostView : MonoBehaviour
+namespace UiView
 {
-    [SerializeField] private TMP_Text _text;
-
-    public void SetText(int cost)
-    { 
-        _text.text = cost.ToString();
-    }
-
-    public void EnableText(bool enable)
+    public class CostView : MonoBehaviour
     {
-        _text.enabled = enable;
+        [SerializeField] private TMP_Text _text;
+        [SerializeField] private Image _image;
+
+        public void SetText(int cost)
+        {
+            _text.text = cost.ToString();
+        }
+
+        public void EnableText(bool enable)
+        {
+            _text.enabled = enable;
+        }
+
+        public void EnableImage(bool enable)
+        {
+            _image.enabled = enable;
+        }
     }
 }

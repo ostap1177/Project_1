@@ -1,13 +1,17 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Destriyer : MonoBehaviour
+namespace Entity
 {
-    public event UnityAction Destroed;
-
-    private void OnCollisionEnter(Collision collision)
+    public class Destriyer : MonoBehaviour
     {
-        Destroy(collision.gameObject);
-        Destroed?.Invoke();
+        public event Action Destroed;
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            Destroy(collision.gameObject);
+            Destroed?.Invoke();
+        }
     }
 }
