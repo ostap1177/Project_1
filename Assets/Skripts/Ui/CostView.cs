@@ -1,4 +1,5 @@
 using TMPro;
+using Ui;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,22 +7,24 @@ namespace UiView
 {
     public class CostView : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _text;
-        [SerializeField] private Image _image;
+        [SerializeField] private TMP_Text _textOnButton;
+        [SerializeField] private TMP_Text _textAd;
+        [SerializeField] private UiBoard _uiBoard;
 
         public void SetText(int cost)
         {
-            _text.text = cost.ToString();
+            _textOnButton.text = cost.ToString();
+            _textAd.text = cost.ToString();
         }
 
         public void EnableText(bool enable)
         {
-            _text.enabled = enable;
+            _textOnButton.enabled = enable;
         }
 
         public void EnableImage(bool enable)
         {
-            _image.enabled = enable;
+            _uiBoard.gameObject.SetActive(enable);
         }
     }
 }

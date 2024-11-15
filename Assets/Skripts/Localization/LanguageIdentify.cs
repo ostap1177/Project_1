@@ -1,4 +1,5 @@
 using UnityEngine;
+using YG;
 
 namespace Localization
 {
@@ -10,7 +11,7 @@ namespace Localization
 
         private void Awake()
         {
-            _languageDefinition.SaveLanguage(EnglishCode);
+            _languageDefinition.SaveLanguage(YandexGame.lang);
         }
     }
 }
