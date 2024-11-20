@@ -7,39 +7,32 @@ namespace Ui
 {
     public class MuteButton : ParentButtons
     {
-        [SerializeField] private AudioMixerGroup _audioMixerGroup;
-        [SerializeField] private string _mixerName;
+        [SerializeField] private MusicObject _musicObject;
+
+        /*[SerializeField] private AudioMixerGroup _audioMixerGroup;
+        [SerializeField] private string _mixerName;*/
 
         private bool isClicked;
-        private int _minValue = -80;
-        private int _maxValue = 0;
+       /* private int _minValue = -80;
+        private int _maxValue = 0;*/
 
         public event Action<bool> IsMuted;
 
-/*        public void OnMute()
+/*        public void SetValume(float value)
         {
-            if (GetClicked() == true)
-            {
-                _audioMixerGroup.audioMixer.SetFloat(_mixerName, _minValue);
-                IsMuted?.Invoke(true);
-            }
-            else
-            {
-                _audioMixerGroup.audioMixer.SetFloat(_mixerName, _maxValue);
-                IsMuted?.Invoke(false);
-            }
-        }*/
-
+            _audioMixerGroup.audioMixer.SetFloat(_mixerName, value);
+        }
+*/
         protected override void Click()
         {
             if (GetClicked() == true)
             {
-                _audioMixerGroup.audioMixer.SetFloat(_mixerName, _minValue);
+                _musicObject.MuteOnGame();
                 IsMuted?.Invoke(true);
             }
             else
             {
-                _audioMixerGroup.audioMixer.SetFloat(_mixerName, _maxValue);
+                _musicObject.PlayOnGame();
                 IsMuted?.Invoke(false);
             }
         }

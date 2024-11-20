@@ -1,4 +1,5 @@
 using UnityEngine;
+using Entity;
 
 namespace Ui
 {
@@ -6,17 +7,19 @@ namespace Ui
     {
         [Space(10)]
         [SerializeField] private UiBoard _uiBoard;
+        [Space(10)]
+        [SerializeField] private PauseObject _pauseObject;
 
         override protected void Click()
         {
             if (_uiBoard.gameObject.activeSelf == false)
             {
                 _uiBoard.gameObject.SetActive(true);
-                Time.timeScale = 0;
+                _pauseObject.PauseGame();
             }
             else
             {
-                Time.timeScale = 1;
+                _pauseObject.PlayGame();
                 _uiBoard.gameObject.SetActive(false);
             }
         }

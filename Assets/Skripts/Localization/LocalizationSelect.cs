@@ -1,5 +1,5 @@
 using UnityEngine;
-using Lean.Localization;
+using YG;
 
 namespace Localization
 {
@@ -8,11 +8,8 @@ namespace Localization
         private const string English = "en";
         private const string Russian = "ru";
         private const string Turkish = "tr";
-        private const string EnglishCode = "English";
-        private const string RussianCode = "Russian";
-        private const string TurkishCode = "Turkish";
+        private const string Hindi = "hi";
 
-        [SerializeField] private LeanLocalization _leanLocalization;
         [SerializeField] private LanguageDefinition _languageDefinition;
 
         private void Start()
@@ -25,16 +22,20 @@ namespace Localization
             switch (languageCode)
             {
                 case English:
-                    _leanLocalization.SetCurrentLanguage(EnglishCode);
+                    YandexGame.SwitchLanguage(English);
                     _languageDefinition.SaveLanguage(English);
                     break;
                 case Russian:
-                    _leanLocalization.SetCurrentLanguage(RussianCode);
+                    YandexGame.SwitchLanguage(Russian);
                     _languageDefinition.SaveLanguage(Russian);
                     break;
                 case Turkish:
-                    _leanLocalization.SetCurrentLanguage(TurkishCode);
+                    YandexGame.SwitchLanguage(Turkish);
                     _languageDefinition.SaveLanguage(Turkish);
+                    break;
+                case Hindi:
+                    YandexGame.SwitchLanguage(Hindi);
+                    _languageDefinition.SaveLanguage(Hindi);
                     break;
             }
         }

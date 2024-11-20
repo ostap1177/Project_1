@@ -5,13 +5,12 @@ namespace Localization
 {
     public class LanguageIdentify : MonoBehaviour
     {
-        private const string EnglishCode = "en";
-
         [SerializeField] private LanguageDefinition _languageDefinition;
 
         private void Awake()
         {
             _languageDefinition.SaveLanguage(YandexGame.lang);
+            Debug.Log(YandexGame.lang);
         }
     }
 }

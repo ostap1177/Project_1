@@ -11,7 +11,6 @@ namespace Ui
         [SerializeField] private LocalizationView _localizationView;
         [SerializeField] private List<string> _languageNames = new();
 
-
         int _index = 0;
 
         private void Awake()
@@ -22,7 +21,7 @@ namespace Ui
 
         public void SetLangeage()
         {
-            if (_index >= _languageNames.Count)
+            if (_index >= _languageNames.Count || _index <0)
                 _index = 0;
 
             _localization.ChangeLanguage(_languageNames[_index]);

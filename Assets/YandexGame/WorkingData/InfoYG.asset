@@ -222,7 +222,7 @@ MonoBehaviour:
   translateMethod: 0
   domainAutoLocalization: com
   CSVFileTranslate:
-    format: 0
+    format: 1
     name: TranslateCSV
   languages:
     ru: 1
@@ -251,7 +251,7 @@ MonoBehaviour:
     ja: 0
     it: 0
     de: 0
-    hi: 0
+    hi: 1
   fonts:
     defaultFont: []
     ru: []
@@ -281,6 +281,42 @@ MonoBehaviour:
     it: []
     de: []
     hi: []
+  fontsTMP:
+    defaultFont:
+    - {fileID: 11400000, guid: 4ed4c1b8a423f7f4ea10cec9156ba0ef, type: 2}
+    ru:
+    - {fileID: 11400000, guid: 4ed4c1b8a423f7f4ea10cec9156ba0ef, type: 2}
+    - {fileID: 11400000, guid: 02fea1fb776e0ad43a5e684a1ab0ce9e, type: 2}
+    en:
+    - {fileID: 11400000, guid: 4ed4c1b8a423f7f4ea10cec9156ba0ef, type: 2}
+    - {fileID: 11400000, guid: 02fea1fb776e0ad43a5e684a1ab0ce9e, type: 2}
+    tr:
+    - {fileID: 11400000, guid: 02fea1fb776e0ad43a5e684a1ab0ce9e, type: 2}
+    az: []
+    be: []
+    he: []
+    hy: []
+    ka: []
+    et: []
+    fr: []
+    kk: []
+    ky: []
+    lt: []
+    lv: []
+    ro: []
+    tg: []
+    tk: []
+    uk: []
+    uz: []
+    es: []
+    pt: []
+    ar: []
+    id: []
+    ja: []
+    it: []
+    de: []
+    hi:
+    - {fileID: 11400000, guid: bc51b965ef291d249886c93112c32990, type: 2}
   fontsSizeCorrect:
     ru: 
     en: 
@@ -317,7 +353,7 @@ MonoBehaviour:
     price: 
     priceValue: 45
     priceCurrencyCode: 
-    currencyImageURL: 
+    currencyImageURL: https://cdn-edge.kwork.ru/pics/t3/02/31707969-660faa6e5f86d.jpg
     consumed: 1
   - id: blue
     title: Barrier
@@ -326,7 +362,7 @@ MonoBehaviour:
     price: 
     priceValue: 45
     priceCurrencyCode: 
-    currencyImageURL: 
+    currencyImageURL: https://cdn-edge.kwork.ru/pics/t3/02/31707969-660faa6e5f86d.jpg
     consumed: 1
   - id: yellow
     title: Barrier
@@ -335,7 +371,7 @@ MonoBehaviour:
     price: 
     priceValue: 45
     priceCurrencyCode: 
-    currencyImageURL: 
+    currencyImageURL: https://cdn-edge.kwork.ru/pics/t3/02/31707969-660faa6e5f86d.jpg
     consumed: 1
   metricaEnable: 0
   metricaCounterID: 0
