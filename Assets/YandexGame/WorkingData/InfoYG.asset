@@ -360,13 +360,22 @@ MonoBehaviour:
     description: Barrier Blue
     imageURI: 
     price: 
-    priceValue: 45
+    priceValue: 50
     priceCurrencyCode: 
     currencyImageURL: https://cdn-edge.kwork.ru/pics/t3/02/31707969-660faa6e5f86d.jpg
     consumed: 1
   - id: yellow
     title: Barrier
     description: Barrier Yellow
+    imageURI: 
+    price: 
+    priceValue: 45
+    priceCurrencyCode: 
+    currencyImageURL: https://cdn-edge.kwork.ru/pics/t3/02/31707969-660faa6e5f86d.jpg
+    consumed: 1
+  - id: red
+    title: Barrier
+    description: Barrier red
     imageURI: 
     price: 
     priceValue: 45

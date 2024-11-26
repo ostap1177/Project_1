@@ -10,7 +10,6 @@ namespace Localization
         private void Awake()
         {
             _languageDefinition.SaveLanguage(YandexGame.lang);
-            Debug.Log(YandexGame.lang);
         }
     }
 }

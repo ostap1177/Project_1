@@ -7,8 +7,6 @@ namespace Shop
 {
     public class ShopItem : MonoBehaviour
     {
-        [SerializeField] private PurchaseYG _purchaseYG;
-        [Space(20)]
         [SerializeField] private string _id;
         [Space(10)]
         [SerializeField] private Toggle _toggle;
@@ -28,11 +26,13 @@ namespace Shop
         private void OnEnable()
         {
             _toggle.onValueChanged.AddListener(OnActivate);
+            _buyButton.onClick.AddListener(BuyPurchase);
         }
 
         private void OnDisable()
         {
             _toggle.onValueChanged.RemoveListener(OnActivate);
+            _buyButton.onClick.RemoveListener(BuyPurchase);
         }
 
         private void Awake()
@@ -42,13 +42,21 @@ namespace Shop
                 _toggle.gameObject.SetActive(false);
                 _toggle.isOn = false;
             }
+            else 
+            {
+                _buyButton.gameObject.SetActive(false);
+            }
 
             if (_isBuy)
             {
                 Purchase();
             }
 
-            _priceText.text = _purchaseYG.data.price;
+            if (YandexGame.PurchaseByID(_id) != null)
+            {
+                _priceText.text = YandexGame.PurchaseByID(_id).priceValue;
+            }
+
             StartCoroutine(YandexPurchaseSpriteHolder.Get(SetImage));
         }
 
@@ -67,6 +75,11 @@ namespace Shop
             _toggle.isOn = isActive;
         }
 
+        public void Refund()
+        { 
+            _isBuy =false;
+        }   
+
         private void OnActivate(bool Activate)
         {
             _isActive = _toggle.isOn;
@@ -76,6 +89,11 @@ namespace Shop
         { 
             _yansImage.sprite = image;
             Debug.Log(image);   
+        }
+
+        private void BuyPurchase()
+        {
+            YandexGame.BuyPayments(_id);
         }
     }
 }

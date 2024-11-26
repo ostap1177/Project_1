@@ -13,19 +13,15 @@ namespace Shop
 
         public static IEnumerator Get(Action<Sprite> successCallback)
         {
-            Debug.Log("Запущено");
-
             if (_sprite != null)
             {
                 successCallback?.Invoke(_sprite);
-                Debug.Log("Уже все есть");
                 yield break;
             }
 
             if (_isLoading)
             {
                 yield return new WaitUntil(() => _sprite != null);
-                Debug.Log("Загружено");
                 successCallback?.Invoke(_sprite);
                 yield break;
             }
@@ -37,8 +33,6 @@ namespace Shop
 
             if (string.IsNullOrEmpty(url))
             {
-                Debug.LogError($"URL null");
-
                 yield break;
             }
 
@@ -55,7 +49,7 @@ namespace Shop
                 {
                     DownloadHandlerTexture handlerTexture = webRequest.downloadHandler as DownloadHandlerTexture;
                     _sprite = Sprite.Create((Texture2D)handlerTexture.texture,
-                        new Rect(0, 0, handlerTexture.texture.width, handlerTexture.texture.height), Vector2.zero);
+                    new Rect(0, 0, handlerTexture.texture.width, handlerTexture.texture.height), Vector2.zero);
                 }
             }
 
@@ -64,19 +58,15 @@ namespace Shop
 
         public static IEnumerator Get(PurchaseYG purchaseYG,Action<Sprite> successCallback)
         {
-            Debug.Log("Запущено");
-
             if (_sprite != null)
             {
                 successCallback?.Invoke(_sprite);
-                Debug.Log("Уже все есть");
                 yield break;
             }
 
             if (_isLoading)
             {
                 yield return new WaitUntil(() => _sprite != null);
-                Debug.Log("Загружено");
                 successCallback?.Invoke(_sprite);
                 yield break;
             }
@@ -88,7 +78,6 @@ namespace Shop
 
             if (string.IsNullOrEmpty(url))
             {
-                Debug.LogError($"URL null");
 
                 yield break;
             }
